@@ -26,6 +26,10 @@ class ProfileController extends Controller
             'profile_photo' => 'nullable|image|max:2048', // 2MB max
         ]);
 
+        // Update all fields first
+        $user->fill($request->only(['name', 'email', 'contact_number', 'program', 'year_level']));
+
+        // Handle new profile photo
         if ($request->hasFile('profile_photo')) {
             if ($user->profile_photo) {
                 Storage::delete('public/' . $user->profile_photo);
@@ -34,7 +38,7 @@ class ProfileController extends Controller
             $user->profile_photo = $path;
         }
 
-        $user->update($request->only(['name', 'email', 'contact_number', 'program', 'year_level']));
+        $user->save(); // ✅ saves everything including profile_photo
 
         return redirect()->route('dashboard')->with('success', 'Profile updated successfully!');
     }
