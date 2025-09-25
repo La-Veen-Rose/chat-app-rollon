@@ -23,13 +23,13 @@ class ProfileController extends Controller
             'contact_number' => 'nullable|string|max:20',
             'program' => 'nullable|string|max:255',
             'year_level' => 'nullable|string|max:50',
-            'profile_photo' => 'nullable|image|max:2048', // 2MB max
+            'profile_photo' => 'nullable|image|max:2048',
         ]);
 
-        // Update all fields first
+
         $user->fill($request->only(['name', 'email', 'contact_number', 'program', 'year_level']));
 
-        // Handle new profile photo
+
         if ($request->hasFile('profile_photo')) {
             if ($user->profile_photo) {
                 Storage::delete('public/' . $user->profile_photo);
@@ -38,7 +38,7 @@ class ProfileController extends Controller
             $user->profile_photo = $path;
         }
 
-        $user->save(); // ✅ saves everything including profile_photo
+        $user->save();
 
         return redirect()->route('dashboard')->with('success', 'Profile updated successfully!');
     }
